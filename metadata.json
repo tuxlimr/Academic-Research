@@ -1,0 +1,5 @@
+{
+  "name": "Academic Paper compartor",
+  "description": "An intelligent academic research assistant powered by Gemini. Search latest journals, analyze papers with AI insights, compare research side-by-side, and manage your notes in a unified workspace.",
+  "requestFramePermissions": []
+}

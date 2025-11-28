@@ -44,57 +44,83 @@ export const Dashboard: React.FC<DashboardProps> = ({ papers, onViewPaper, onTog
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Hero & Search */}
-      <div className="flex flex-col items-center justify-center mb-16 text-center animate-slide-up">
-        <h1 className="text-5xl md:text-6xl font-serif font-black text-secondary-900 mb-6 tracking-tight">
-          Unlock Human <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-400">Knowledge</span>
-        </h1>
-        <p className="text-xl text-secondary-500 mb-10 max-w-2xl font-light leading-relaxed">
-          Navigate the world's research with AI-powered insights. Compare, analyze, and synthesize complex papers in seconds.
-        </p>
+      {/* Search Section - Centered, Minimal, Robust */}
+      <div className="flex flex-col items-center justify-center mb-16 animate-fade-in">
         
-        <form onSubmit={handleSearch} className="w-full max-w-3xl relative group z-20">
-          <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-secondary-400 group-focus-within:text-primary-500 transition-colors">
-              <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
-            </svg>
+        {/* The Search Bar Container */}
+        <div className="w-full max-w-4xl relative z-20">
+          <form onSubmit={handleSearch} className="relative group">
+            {/* Glow effect behind */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary-200 via-indigo-200 to-primary-200 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+            
+            <div className="relative flex items-center bg-white rounded-2xl shadow-xl shadow-secondary-900/5 border border-secondary-100 p-2 transition-transform duration-200 focus-within:scale-[1.01]">
+              
+              {/* Search Icon */}
+              <div className="pl-4 pr-3 text-secondary-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+
+              {/* Input */}
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for papers, authors, or research topics..."
+                className="flex-1 h-12 bg-transparent border-none outline-none text-lg text-secondary-900 placeholder:text-secondary-400 font-medium"
+              />
+
+              {/* Right Side Actions / Button */}
+              <div className="flex items-center gap-2 pr-2">
+                 {/* Clear button if text exists */}
+                 {searchQuery && (
+                   <button
+                     type="button"
+                     onClick={() => setSearchQuery('')}
+                     className="p-2 text-secondary-400 hover:text-secondary-600 hover:bg-secondary-50 rounded-full transition-colors"
+                   >
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                       <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                     </svg>
+                   </button>
+                 )}
+
+                 {/* Submit Button */}
+                 <button 
+                  type="submit"
+                  disabled={loadingState.status === 'loading'}
+                  className="px-6 py-2.5 bg-secondary-900 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-secondary-900/20 hover:shadow-primary-600/30 transition-all active:scale-95 flex items-center gap-2"
+                >
+                  {loadingState.status === 'loading' ? (
+                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  ) : (
+                    <>
+                      <span>Search</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Helper Text / Quick Tags below */}
+          <div className="mt-4 flex flex-wrap justify-center gap-y-2 gap-x-4 text-sm text-secondary-500 animate-fade-in delay-100">
+             <span className="opacity-60 italic">Try searching:</span>
+             {["Generative AI", "Climate Science", "Quantum Mechanics", "Neuroscience"].map(tag => (
+               <button
+                 key={tag}
+                 onClick={() => { setSearchQuery(tag); performSearch(tag); }}
+                 className="hover:text-primary-600 hover:underline decoration-primary-300 underline-offset-4 transition-colors font-medium text-secondary-600"
+               >
+                 {tag}
+               </button>
+             ))}
           </div>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="What are you researching today?"
-            className="w-full h-16 pl-16 pr-20 rounded-2xl border-0 bg-white shadow-xl shadow-secondary-200/50 focus:ring-4 focus:ring-primary-100 text-lg text-secondary-800 placeholder:text-secondary-400 outline-none transition-all"
-          />
-          <button 
-            type="submit"
-            disabled={loadingState.status === 'loading'}
-            className="absolute right-3 top-3 bottom-3 aspect-square bg-primary-600 hover:bg-primary-700 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-70 shadow-md hover:shadow-lg active:scale-95"
-          >
-            {loadingState.status === 'loading' ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            )}
-          </button>
-        </form>
-        
-        {/* Quick Tags */}
-        <div className="flex flex-wrap gap-2 mt-6 justify-center animate-fade-in delay-100">
-          {["Generative AI", "Climate Science", "Quantum Mechanics", "Neuroscience"].map((tag) => (
-             <button 
-                key={tag}
-                onClick={() => {
-                  setSearchQuery(tag);
-                  performSearch(tag);
-                }}
-                className="px-4 py-1.5 rounded-full bg-white border border-secondary-200 text-sm font-medium text-secondary-600 hover:border-primary-300 hover:text-primary-600 hover:shadow-sm transition-all"
-             >
-               {tag}
-             </button>
-          ))}
         </div>
       </div>
 
